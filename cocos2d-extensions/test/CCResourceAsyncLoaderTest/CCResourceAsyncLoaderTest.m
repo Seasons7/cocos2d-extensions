@@ -32,8 +32,9 @@ enum {
 		
         CCLabelTTF *label = [CCLabelTTF labelWithString:@" " fontName:@"Marker Felt" fontSize:24];
         
-        // ローダーの生成
+        // Setup CCResourceAsyncLoader
         CCResourceAsyncLoader *loader = nil;
+
         NSArray *resourceNames = [NSArray arrayWithObjects:
                                   @"1.png",
                                   @"2.png",
@@ -41,22 +42,26 @@ enum {
                                   @"4.png",
                                   nil];
         
-        // ローディング中のラベル
+        // Loading label
         NSString *s = [NSString stringWithFormat:@"Now Loading...[%d]",[resourceNames count]];
         [label setString:s];
         label.tag = kTag_CCRAL_Test_Label;
         label.position = ccp(160,40);
         [self addChild:label];
         
-        // ローダーセットアップ
+        // Load finished selector 
         CCSendMessages *message = [CCSendMessages actionWithTarget:self];
         [[message addMessage] loadComplete];
+
+        // CCResourceAsyncLoader setup
         loader = [CCResourceAsyncLoader loaderWithCount:[resourceNames count]];
         loader.tag = kTag_CCRAL_Test_Loader;
+
+        // regist load resource file
         for (NSString *path in resourceNames) {
             [loader addLoadAsyncTexture:path message:message];
         }
-        // ローダー起動
+        // execute loader
         [self addChild:loader];
 	}
 	return self;
