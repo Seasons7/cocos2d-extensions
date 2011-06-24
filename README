@@ -1,0 +1,97 @@
+cocos2d-extensions made by Seasons
+
+- CCBumper
+- CCResourceAsyncLoader
+
+CCBumper is simple splash logo animation.
+
+For example:CCBumperCrossFade
+>>>>
+=======================================================
+ Usage:
+ AppDelegate.m
+
+ // only this code. easy!
+ [[CCDirector sharedDirector] replaceScene:[CCBumperCrossFade scene]]; 
+=======================================================
+
+@implementation CCBumperCrossFade
+
++ (CCScene *) scene {
+
+    return [CCBumperCrossFade scene:@"Bumper.png"];
+}
+
+- (void) onEnter {
+    
+    // Next SceneChange settings
+    CCSendMessages *message = [CCSendMessages actionWithTarget:[CCDirector sharedDirector]];
+    CCTransitionCrossFade *crossFade = [CCTransitionCrossFade transitionWithDuration:1.0 scene:[CCBumperTest scene]];
+    [[CCDirector sharedDirector] replaceScene:crossFade];
+    
+    // Create Action
+    const float fadeDuration = 3.0;
+    CCSequence *seq = [CCSequence actions:[CCDelayTime actionWithDuration:fadeDuration],message, nil];
+    [self runAction:seq];
+    
+    [super onEnter];
+}
+
+@end
+<<<<
+
+CCResouceAsyncLoader is simple and easy class to asynchronous load your resources.
+
+>>>>
+-(id) init
+{
+	if( (self=[super init])) {
+		
+        // CCResourceAsyncLoader setup
+        loader = [CCResourceAsyncLoader loaderWithCount:[resourceNames count]];
+        loader.tag = kTag_CCRAL_Test_Loader; // you can get loader class in other selector.
+
+        // regist load resource file
+        for (NSString *path in resourceNames) {
+            [loader addLoadAsyncTexture:path message:message];
+        }
+        // execute loader
+        [self addChild:loader];
+	}
+	return self;
+}
+
+- (void) loadComplete {
+
+	// You can get loader by CCNode tag.
+    CCNode *obj = [self getChildByTag:kTag_CCRAL_Test_Loader];
+    NSAssert([obj isKindOfClass:[CCResourceAsyncLoader class]],@"Not CCResourceAsyncLoader");
+
+    CCResourceAsyncLoader *loader = (CCResourceAsyncLoader *)obj;
+	/****************************************************/
+	/* [Important] Decrement resource count. */
+    loader.resourceCount--; 
+	/****************************************************/
+
+    // Load Complete!!
+    if( loader.resourceCount == 0 ) {
+        
+        /* write next scene jump code */
+        /* for example
+         
+        CCSendMessages *message = [CCSendMessages actionWithTarget:[CCDirector sharedDirector]];
+     
+        // to Next Scene Action
+        [[message addMessage] replaceScene:[CCTransitionCrossFade 
+                                         transitionWithDuration:1.0 
+                                        scene:[CCResourceAsyncLoaderTest scene]]];
+        [self runAction:message];
+         */
+    }
+	
+	/* Update progress bar or message!! */
+	/*
+	write code here
+	*/
+}
+<<<<
