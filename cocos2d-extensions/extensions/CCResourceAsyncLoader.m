@@ -46,6 +46,7 @@
         
         resourceCount_    = 0;
         maxResourceCount_ = maxResourceCount;
+        loadResourceLists_ = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -54,11 +55,30 @@
                       message:(CCSendMessages *)message {
     
     NSAssert( resourceCount_ < maxResourceCount_ , @"Load ResourceCount over!!" );
+    NSAssert( [loadResourceLists_ objectForKey:textureFilePath]==nil , @"Key already exists!!" );
     
     resourceCount_ ++;
-	[[CCTextureCache sharedTextureCache] addImageAsync:textureFilePath
-												target:message
-											  selector:@selector(execute)];
+    [loadResourceLists_ setObject:message forKey:textureFilePath];
+}
+
+- (void) onEnter {
+    
+    NSArray *keys = [loadResourceLists_ allKeys];
+    for (NSString *key in keys) {
+        [[CCTextureCache sharedTextureCache] addImageAsync:key
+                                                    target:[loadResourceLists_ objectForKey:key]
+                                                  selector:@selector(execute)];
+    }
+    [super onEnter];
+}
+
+- (void) onExit {
+    
+    // [IMPORTANT]
+    // loadResourceLists have retain object, so you must release in onExit.
+    // Otherwise , dealloc method never be called.
+    [loadResourceLists_ release];
+    [super onExit];
 }
 
 @end

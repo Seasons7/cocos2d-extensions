@@ -29,6 +29,7 @@
     
     int maxResourceCount_;
     int resourceCount_;
+    NSMutableDictionary *loadResourceLists_;
 }
 
 + (id) loaderWithCount : (int)maxResourceCount;
